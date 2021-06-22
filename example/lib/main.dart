@@ -4,7 +4,6 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:uuid/uuid.dart';
-import 'package:walletconnect/interfaces.dart';
 
 import 'package:walletconnect/walletconnect.dart';
 
@@ -38,6 +37,7 @@ class _MyAppState extends State<MyApp> {
             _qrContent = "";
             break;
           case Status.Closed:
+          case Status.Disconected:
             break;
           default:
             break;
@@ -58,6 +58,8 @@ class _MyAppState extends State<MyApp> {
     // _config = Config(Uuid().v4(), "https://bridge.walletconnect.org", key);
     _config =
         Config(Uuid().v4(), "http://localhost:${_bridgeServer.port}", key);
+    _config = Config("b41c3046-fb20-4dc8-acef-49cbaa63dc10",
+        "http://localhost:${_bridgeServer.port}", key);
     _session = WCSession(
         _config,
         PeerMeta(

@@ -1,7 +1,7 @@
 name: walletconnect
 description: A pure Dart WalletConnect package for Flutter.
-version: 0.0.1
-homepage: casperpas.dev
+version: 0.1.0
+homepage: https://casperpas.dev
 
 environment:
   sdk: ">=2.12.0 <3.0.0"

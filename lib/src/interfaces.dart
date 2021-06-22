@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
-import 'package:walletconnect/hex.dart';
+import 'package:walletconnect/src/hex.dart';
 
 class PeerMeta {
   String url;

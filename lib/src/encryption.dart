@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'package:walletconnect/hex.dart';
+import 'package:walletconnect/src/hex.dart';
 
 import 'interfaces.dart';
 import 'package:encrypt/encrypt.dart';

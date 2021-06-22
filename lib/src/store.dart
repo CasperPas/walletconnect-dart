@@ -18,6 +18,8 @@ class WCSessionStore {
       _prefs = await SharedPreferences.getInstance();
     }
 
+    await _prefs?.reload();
+
     final String json = _prefs?.getString(_STORE_KEY) ?? "{}";
     _currentStates =
         (jsonDecode(json) as Map<String, dynamic>).map((key, value) {
@@ -36,7 +38,7 @@ class WCSessionStore {
     });
   }
 
-  void _saveStore() {
+  Future<bool> _saveStore() async {
     final json = jsonEncode(_currentStates.map((key, value) => MapEntry(key, {
           "config": value.config.asMap,
           "clientData": value.clientData.asMap,
@@ -46,21 +48,22 @@ class WCSessionStore {
           "approvedAccounts": value.approvedAccounts,
           "chainId": value.chainId,
         })));
-    _prefs?.setString(_STORE_KEY, json);
+    final saved = await _prefs?.setString(_STORE_KEY, json) ?? false;
+    return saved;
   }
 
   State? load(String id) => _currentStates[id] ?? null;
 
-  void store(String id, State state) {
+  Future<void> store(String id, State state) async {
     if (_prefs == null) return;
     _currentStates[id] = state;
-    _saveStore();
+    await _saveStore();
   }
 
-  void remove(String id) {
+  Future<void> remove(String id) async {
     if (_prefs == null) return;
     _currentStates.remove(id);
-    _saveStore();
+    await _saveStore();
   }
 }
 

@@ -2,7 +2,7 @@ import 'dart:typed_data';
 
 import 'package:flutter/foundation.dart';
 import 'package:test/test.dart';
-import 'package:walletconnect/hex.dart';
+import 'package:walletconnect/src/hex.dart';
 
 void main() {
   final key =

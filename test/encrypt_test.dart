@@ -1,5 +1,5 @@
 import 'package:test/test.dart';
-import 'package:walletconnect/encryption.dart';
+import 'package:walletconnect/src/encryption.dart';
 
 void main() {
   final key =

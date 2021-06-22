@@ -1,9 +1,9 @@
 import 'package:url_launcher/url_launcher.dart';
 import 'package:uuid/uuid.dart';
-import 'package:walletconnect/config.dart';
-import 'package:walletconnect/encryption.dart';
-import 'package:walletconnect/store.dart';
-import 'package:walletconnect/transport.dart';
+import 'package:walletconnect/src/config.dart';
+import 'package:walletconnect/src/encryption.dart';
+import 'package:walletconnect/src/store.dart';
+import 'package:walletconnect/src/transport.dart';
 
 import 'interfaces.dart';
 
@@ -47,13 +47,14 @@ class WCSession {
     _transport = Transport(config.bridge, _handleStatus, _handleMessage);
     _payloadAdapter = PayloadAdapter();
     _sessionStore = WCSessionStore();
-    _sessionStore.init().then((_) {
+    _sessionStore.init().then((_) async {
       final state = _sessionStore.load(config.handshakeTopic);
       if (state != null) {
         if (clientId != null && clientId != state.clientData.peerId) {
           throw ArgumentError(
               "Provided clientId is different from stored clientId");
         }
+        _config = state.config;
         _currentKey = state.currentKey;
         _approvedAccounts = state.approvedAccounts;
         _chainId = state.chainId;
@@ -61,6 +62,10 @@ class WCSession {
         _peerId = state.peerData?.peerId;
         _peerMeta = state.peerData?.peerMeta;
         _clientData = state.clientData;
+        await _transport.connect();
+        if (_approvedAccounts?.isNotEmpty ?? false) {
+          _triggerCallbacks(status: Status.Approved);
+        }
       } else {
         _clientData = ClientInfo(
           clientId ?? Uuid().v4(),
@@ -106,6 +111,9 @@ class WCSession {
             _approvedAccounts = result['accounts']?.cast<String>();
             _chainId = result['chainId'];
             _clientData.chainId = _chainId;
+            if (_peerMeta != null) {
+              _clientData.peerMeta = _peerMeta!;
+            }
             _storeSession();
             _triggerCallbacks(
                 status: result['approved'] ? Status.Approved : Status.Closed);
